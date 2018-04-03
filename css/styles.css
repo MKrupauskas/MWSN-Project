@@ -275,3 +275,14 @@ grid-template-columns: repeat(3, 1fr); */
 #restaurant-hours td {
   color: #666;
 }
+
+@media only screen and (max-width: 418px) {
+  .filter-options {
+    flex-direction: column;
+    padding: 10px 0 0 0;
+  }
+
+  .filter-options select {
+    width: 95%;
+  }
+}
