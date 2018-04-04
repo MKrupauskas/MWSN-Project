@@ -16,7 +16,7 @@
   </header>
 
   <main id="maincontent">
-    <section id="map-container">
+    <section id="map-container" aria-hidden="true">
       <div id="map"></div>
     </section>
     <section>
@@ -36,6 +36,11 @@
   <script type="application/javascript" charset="utf-8" src="js/dbhelper.js"></script>
   <script type="application/javascript" charset="utf-8" src="js/main.js"></script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB6tAn56MoZtxHyWOZbPxtS5zpmAV-zrG8&libraries=places&callback=initMap"></script>
+  <script>
+    document.querySelectorAll('#map a').forEach(function(item) {
+      item.setAttribute('tabindex','999');
+    });
+  </script>
 
 
   <footer id="footer">
