@@ -319,3 +319,7 @@ nav h1 a {
     grid-template-columns: repeat(4, 1fr);
   }
 }
+
+:focus {
+  outline: 2px red solid;
+}
