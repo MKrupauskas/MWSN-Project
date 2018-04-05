@@ -1,5 +1,6 @@
-const cacheName = 'v12';
+const cacheName = 'v13';
 const cacheFiles = [
+    './',
     './index.html',
     './restaurant.html',
     './css/styles.css',
