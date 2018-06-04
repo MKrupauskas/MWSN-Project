@@ -65,7 +65,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   const image = document.createElement('img');
   image.className = 'restaurant-img';
   image.id = 'restaurant-img';
-  image.src = DBHelper.imageUrlForRestaurant(restaurant);
+  image.src = DBHelper.imageUrlForRestaurant(restaurant) + '.jpg';
   image.alt = `Restaurant ${restaurant.name} in ${restaurant.neighborhood}`;
   picture.append(image);
 
@@ -149,7 +149,7 @@ createReviewHTML = (review) => {
 /**
  * Add restaurant name to the breadcrumb navigation menu
  */
-fillBreadcrumb = (restaurant=self.restaurant) => {
+fillBreadcrumb = (restaurant = self.restaurant) => {
   const breadcrumb = document.getElementById('breadcrumb');
   const li = document.createElement('li');
   li.innerHTML = restaurant.name;
@@ -173,10 +173,12 @@ getParameterByName = (name, url) => {
 }
 
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js', { scope: './' })
+  navigator.serviceWorker.register('./sw.js', {
+      scope: './'
+    })
     .then(function (registration) {
       console.info('Registered Service Worker', registration)
     }).catch(function (err) {
       console.error('Service Worker Failed to Register', err);;
-  });
+    });
 }
