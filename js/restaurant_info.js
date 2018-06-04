@@ -58,14 +58,15 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   const picture = document.getElementById('restaurant-pic');
 
   const source = document.createElement('source');
-  source.srcset = `${DBHelper.imageUrlForRestaurant(restaurant).split('.')[0]}-small.jpg`;
+  source.dataset.srcset = `${DBHelper.imageUrlForRestaurant(restaurant).split('.')[0]}-small.jpg`;
   source.media = '(max-width: 650px)';
   picture.append(source);
 
   const image = document.createElement('img');
   image.className = 'restaurant-img';
   image.id = 'restaurant-img';
-  image.src = DBHelper.imageUrlForRestaurant(restaurant) + '.jpg';
+  image.dataset.src = DBHelper.imageUrlForRestaurant(restaurant) + '.jpg';
+  image.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
   image.alt = `Restaurant ${restaurant.name} in ${restaurant.neighborhood}`;
   picture.append(image);
 
