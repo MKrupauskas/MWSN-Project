@@ -159,3 +159,16 @@ class DBHelper {
   }
 
 }
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('./sw.js', {
+        scope: './'
+      })
+      .then(function (registration) {
+        console.info('Registered Service Worker', registration)
+      }).catch(function (err) {
+        console.error('Service Worker Failed to Register', err);;
+      });
+  })
+}

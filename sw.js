@@ -1,10 +1,9 @@
-const cacheName = 'v14';
+const cacheName = 'static-cache-v2';
 const cacheFiles = [
     './',
     './index.html',
     './restaurant.html',
     './css/styles.css',
-    './data/restaurants.json',
     './js/main.js',
     './js/dbhelper.js',
     './js/restaurant_info.js'
