@@ -18,10 +18,7 @@ class DBHelper {
   static fetchRestaurants(callback) {
     fetch(DBHelper.DATABASE_URL)
       .then(response => response.json())
-      .then(data => {
-        console.log(data)
-        callback(null, data)
-      })
+      .then(data => callback(null, data))
       .catch(error => callback(error, null))
   }
 
