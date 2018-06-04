@@ -42,7 +42,7 @@ self.addEventListener('fetch', function (e) {
     e.respondWith(
         caches.match(e.request).then(function (response) {
             if (response) {
-                console.info('WOOOOOOOOO [SW] Found in cache', e.request.url)
+                // console.info('WOOOOOOOOO [SW] Found in cache', e.request.url)
                 return response;
             }
             const requestClone = e.request.clone();
