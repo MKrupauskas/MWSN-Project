@@ -1,6 +1,79 @@
 /**
  * Common database helper functions.
  */
+
+let db;
+if ("indexedDB" in window) {
+  const dbPromise = indexedDB.open("test-db1", 11);
+
+  dbPromise.onerror = function (event) {
+    console.log("error: ");
+  };
+
+  dbPromise.onsuccess = function (event) {
+    db = dbPromise.result;
+    console.log("success: " + db);
+  };
+
+  dbPromise.onupgradeneeded = function (event) {
+    const dbevent = event.target.result;
+    if (!dbevent.objectStoreNames.contains('data')) {
+      dbevent.createObjectStore('data', {
+        autoIncrement: true
+      });
+    }
+    console.log('created db store')
+  }
+}
+
+function load(callback) {
+  if (db) {
+    console.log('LAODLOADLDOLDOLDOADOLODLLDLAODLOADLDOLDOLDOADOLODLLDLAODLOADLDOLDOLDOADOLODLLDLAODLOADLDOLDOLDOADOLODLLDLAODLOADLDOLDOLDOADOLODLLDLAODLOADLDOLDOLDOADOLODLLDLAODLOADLDOLDOLDOADOLODLLDLAODLOADLDOLDOLDOADOLODLLDLAODLOADLDOLDOLDOADOLODLLDLAODLOADLDOLDOLDOADOLODLLDLAODLOADLDOLDOLDOADOLODLLDLAODLOADLDOLDOLDOADOLODLLDLAODLOADLDOLDOLDOADOLODL')
+
+    let request;
+    fetch(DBHelper.DATABASE_URL)
+      .then(response => response.json())
+      .then(data => {
+        request = db.transaction(["data"], "readwrite")
+          .objectStore("data")
+          .add(data);
+        callback(null, data)
+      })
+      .catch(error => callback(error, null))
+
+    request.onsuccess = function (event) {
+      console.log("data has been added to the database");
+    };
+
+    request.onerror = function (event) {
+      console.log("failed to add data to the database");
+    }
+  }
+}
+
+function read(callback) {
+  if (db) {
+
+    const request = db.transaction(["data"], "readonly")
+      .objectStore("data")
+      .get(1)
+
+    request.onsuccess = function (event) {
+      console.log("data has been read from the database");
+      if (request.result === undefined) {
+        load(callback)
+        return
+      }
+
+      callback(null, request.result)
+      console.log('READINGREADUGUNAREADINGREADUGUNAREADINGREADUGUNAREADINGREADUGUNAREADINGREADUGUNAREADINGREADUGUNAREADINGREADUGUNAREADINGREADUGUNAREADINGREADUGUNAREADINGREADUGUNAREADINGREADUGUNAREADINGREADUGUNAREADINGREADUGUNAREADINGREADUGUNAREADINGREADUGUNAREADINGREADUGUNAREADINGREADUGUNAREADINGREADUGUNAREADINGREADUGUNAREADINGREADUGUNAREADINGREADUGUNA')
+    };
+
+    request.onerror = function (event) {
+      console.log("failed to read data to the database");
+    }
+  }
+}
 class DBHelper {
 
   /**
@@ -16,10 +89,7 @@ class DBHelper {
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
-    fetch(DBHelper.DATABASE_URL)
-      .then(response => response.json())
-      .then(data => callback(null, data))
-      .catch(error => callback(error, null))
+    read(callback);
   }
 
   /**

@@ -1,4 +1,4 @@
-const cacheName = 'static-cache-v2';
+const cacheName = 'static-cache-v3';
 const cacheFiles = [
     './',
     './index.html',
