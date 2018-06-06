@@ -38,33 +38,40 @@ self.addEventListener('fetch', function (e) {
     //     return res || requestBackend(event);
     //   })
 
-    e.respondWith(
-        caches.match(e.request).then(function (response) {
-            if (response) {
-                console.info('WOOOOOOOOO [SW] Found in cache', e.request.url)
-                return response;
-            }
-            const requestClone = e.request.clone();
-
-            console.log('[SW] Fetching', e.request.url);
-            return fetch(e.request)
-                .then(response => {
-
-                    if (!response) {
-                        console.log('[SW] No response from fetch');
-                        return response;
-                    }
-                    if (e.request.url.startsWith('https://maps')) return response;
-
-                    const responseClone = response.clone();
-
-                    caches.open(cacheName).then(function (cache) {
-                        cache.put(requestClone, responseClone);
-                    })
+    // special case for responding to requests for a specific restaurant's page
+    if (e.request.url.includes('restaurant.html?')) {
+        const url = e.request.url.split('?')[0]
+        e.respondWith(caches.match(url))
+    } else {
+        e.respondWith(
+            caches.match(e.request).then(function (response) {
+                if (response) {
+                    console.info('WOOOOOOOOO [SW] Found in cache', e.request.url)
                     return response;
-                }).catch(function (err) {
-                    console.log('[SW] Error Fetching and Caching', err);
-                });
-        })
-    );
+                }
+                const requestClone = e.request.clone();
+
+                console.log('[SW] Fetching', e.request.url);
+                return fetch(e.request)
+                    .then(response => {
+
+                        if (!response) {
+                            console.log('[SW] No response from fetch');
+                            return response;
+                        }
+                        if (e.request.url.startsWith('https://maps')) return response;
+
+                        const responseClone = response.clone();
+
+                        caches.open(cacheName).then(function (cache) {
+                            cache.put(requestClone, responseClone);
+                        })
+                        return response;
+                    }).catch(function (err) {
+                        console.log('[SW] Error Fetching and Caching', err);
+                    });
+            })
+        );
+    }
+
 });
