@@ -4,75 +4,82 @@
 
 // consider using Dexie for a better IndexedDB experience http://dexie.org
 
-let db;
-if ("indexedDB" in window) {
-  const dbPromise = indexedDB.open("test-db1", 11);
+// let db;
+// if ("indexedDB" in window) {
+//   const dbPromise = indexedDB.open("test-db1", 11);
 
-  dbPromise.onerror = function (event) {
-    console.log("error: ");
-  };
+//   dbPromise.onerror = function (event) {
+//     console.log("error: ");
+//   };
 
-  dbPromise.onsuccess = function (event) {
-    db = dbPromise.result;
-    console.log("success: " + db);
-  };
+//   dbPromise.onsuccess = function (event) {
+//     db = dbPromise.result;
+//     console.log("success: " + db);
+//   };
 
-  dbPromise.onupgradeneeded = function (event) {
-    const dbevent = event.target.result;
-    if (!dbevent.objectStoreNames.contains('data')) {
-      dbevent.createObjectStore('data', {
-        autoIncrement: true
-      });
-    }
-    console.log('created db store')
-  }
-}
+//   dbPromise.onupgradeneeded = function (event) {
+//     const dbevent = event.target.result;
+//     if (!dbevent.objectStoreNames.contains('data')) {
+//       dbevent.createObjectStore('data', {
+//         autoIncrement: true
+//       });
+//     }
+//     console.log('created db store')
+//   }
+// }
 
-function load(callback) {
-  if (db) {
-    let request;
-    fetch(DBHelper.DATABASE_URL)
-      .then(response => response.json())
-      .then(data => {
-        request = db.transaction(["data"], "readwrite")
-          .objectStore("data")
-          .add(data);
-        callback(null, data)
-      })
-      .catch(error => callback(error, null))
+// function load(callback) {
+//   if (db) {
+//     let request;
+//     fetch(DBHelper.DATABASE_URL)
+//       .then(response => response.json())
+//       .then(data => {
+//         request = db.transaction(["data"], "readwrite")
+//           .objectStore("data")
+//           .add(data);
+//         callback(null, data)
+//       })
+//       .catch(error => callback(error, null))
 
-    request.onsuccess = function (event) {
-      console.log("data has been added to the database");
-    };
+//     request.onsuccess = function (event) {
+//       console.log("data has been added to the database");
+//     };
 
-    request.onerror = function (event) {
-      console.log("failed to add data to the database");
-    }
-  }
-}
+//     request.onerror = function (event) {
+//       console.log("failed to add data to the database");
+//     }
+//   }
+// }
 
-function read(callback) {
-  if (db) {
+// function read(callback) {
+//   if (db) {
 
-    const request = db.transaction(["data"], "readonly")
-      .objectStore("data")
-      .get(1)
+//     const request = db.transaction(["data"], "readonly")
+//       .objectStore("data")
+//       .get(1)
 
-    request.onsuccess = function (event) {
-      console.log("data has been read from the database");
-      if (request.result === undefined) {
-        load(callback)
-        return
-      }
+//     request.onsuccess = function (event) {
+//       console.log("data has been read from the database");
+//       if (request.result === undefined) {
+//         load(callback)
+//         return
+//       }
 
-      callback(null, request.result)
-    };
+//       callback(null, request.result)
+//     };
 
-    request.onerror = function (event) {
-      console.log("failed to read data to the database");
-    }
-  }
-}
+//     request.onerror = function (event) {
+//       console.log("failed to read data to the database");
+//     }
+//   }
+// }
+  // static fetchRestaurants(callback) {
+  //   get(callback);
+  // }
+
+/**
+ * Common database helper functions.
+ */
 class DBHelper {
 
   /**
@@ -88,7 +95,10 @@ class DBHelper {
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
-    read(callback);
+    fetch(DBHelper.DATABASE_URL)
+      .then(response => response.json())
+      .then(data => callback(null, data))
+      .catch(error => callback(error, null))
   }
 
   /**
@@ -229,15 +239,15 @@ class DBHelper {
 
 }
 
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function () {
-    navigator.serviceWorker.register('./sw.js', {
-        scope: './'
-      })
-      .then(function (registration) {
-        console.info('Registered Service Worker', registration)
-      }).catch(function (err) {
-        console.error('Service Worker Failed to Register', err);;
-      });
-  })
-}
+// if ('serviceWorker' in navigator) {
+//   window.addEventListener('load', function () {
+//     navigator.serviceWorker.register('./sw.js', {
+//         scope: './'
+//       })
+//       .then(function (registration) {
+//         console.info('Registered Service Worker', registration)
+//       }).catch(function (err) {
+//         console.error('Service Worker Failed to Register', err);;
+//       });
+//   })
+// }

@@ -43,6 +43,7 @@
     <section id="restaurant-container">
       <h2 id="restaurant-name"></h2>
       <picture id="restaurant-pic"></picture>
+      <button style="width: 100%;">Favorite this Restaurant</button>
       <p id="restaurant-cuisine"></p>
       <p id="restaurant-address"></p>
       <table id="restaurant-hours"></table>
@@ -50,6 +51,21 @@
     <!-- end restaurant -->
     <!-- Beginning reviews -->
     <section id="reviews-container">
+        <h3>Leave a review.</h3>
+        <form method="post">
+          <select name="rating" required>
+            <option value="5">5 Stars</option>
+            <option value="4">4 Stars</option>
+            <option value="3">3 Stars</option>
+            <option value="2">2 Stars</option>
+            <option value="1">1 Stars</option>
+          </select>
+          <label for="name">
+            <input type="text" name="name" placeholder="Name" required>
+          </label>
+          <textarea name="comments" placeholder="Your review goes here." required></textarea>
+          <input type="submit">
+        </form>
       <ul id="reviews-list"></ul>
     </section>
     <!-- End reviews -->

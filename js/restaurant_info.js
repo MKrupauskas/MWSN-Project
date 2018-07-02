@@ -104,23 +104,27 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
 /**
  * Create all reviews HTML and add them to the webpage.
  */
-fillReviewsHTML = (reviews = self.restaurant.reviews) => {
-  const container = document.getElementById('reviews-container');
-  const title = document.createElement('h3');
-  title.innerHTML = 'Reviews';
-  container.appendChild(title);
-
-  if (!reviews) {
-    const noReviews = document.createElement('p');
-    noReviews.innerHTML = 'No reviews yet!';
-    container.appendChild(noReviews);
-    return;
-  }
-  const ul = document.getElementById('reviews-list');
-  reviews.forEach(review => {
-    ul.appendChild(createReviewHTML(review));
+fillReviewsHTML = (restaurant = self.restaurant) => {
+  fetch(`http://localhost:1337/reviews/?restaurant_id=${restaurant.id}`)
+  .then(response => response.json())
+  .then(reviews => {
+    const container = document.getElementById('reviews-container');
+    const title = document.createElement('h3');
+    title.innerHTML = 'Reviews';
+    container.appendChild(title);
+  
+    if (!reviews) {
+      const noReviews = document.createElement('p');
+      noReviews.innerHTML = 'No reviews yet!';
+      container.appendChild(noReviews);
+      return;
+    }
+    const ul = document.getElementById('reviews-list');
+    reviews.forEach(review => {
+      ul.appendChild(createReviewHTML(review));
+    });
+    container.appendChild(ul);
   });
-  container.appendChild(ul);
 }
 
 /**
@@ -131,9 +135,10 @@ createReviewHTML = (review) => {
   const name = document.createElement('p');
   name.innerHTML = review.name;
   li.appendChild(name);
-
+  
+  const time = new Date(review.createdAt);
   const date = document.createElement('p');
-  date.innerHTML = review.date;
+  date.innerHTML = time.toLocaleString();
   li.appendChild(date);
 
   const rating = document.createElement('p');
@@ -171,4 +176,26 @@ getParameterByName = (name, url) => {
   if (!results[2])
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+window.onload = () => {
+  document.querySelector('form').addEventListener('submit', (e) => {
+    e.preventDefault()
+    const elements = e.target.elements;
+    const data = {
+      rating: elements[0].value,
+      name: elements[1].value,
+      comments: elements[2].value,
+      restaurant_id: self.restaurant.id
+    }
+    console.log(data)
+    fetch('http://localhost:1337/reviews', {method: 'POST', body: JSON.stringify(data)}).then(console.log).catch(console.error)
+    location.reload();
+  })
+
+  document.querySelector('button').addEventListener('click', () => {
+    fetch(`http://localhost:1337/restaurants/${self.restaurant.id}/?is_favorite=${!self.restaurant.is_favorite}`, { method: 'PUT' })
+    alert(!self.restaurant.is_favorite ? 'You favorited this restaurant' : 'You unfavorited this restaurant')
+    location.reload();    
+  })
 }
