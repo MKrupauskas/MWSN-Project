@@ -26,8 +26,8 @@ window.initMap = () => {
 /**
  * Get current restaurant from page URL.
  */
-fetchRestaurantFromURL = (callback) => {
-  if (self.restaurant) { // restaurant already fetched!
+fetchRestaurantFromURL = (callback, refetch = false) => {
+  if (self.restaurant && !refetch) { // restaurant already fetched!
     callback(null, self.restaurant)
     return;
   }
@@ -125,9 +125,6 @@ getReviewsData = (refetch = false) => {
  */
 fillReviewsHTML = (restaurant = self.restaurant, reviews) => {
   const container = document.getElementById('reviews-container');
-  const title = document.createElement('h3');
-  title.innerHTML = 'Reviews';
-  container.appendChild(title);
 
   if (!reviews) {
     const noReviews = document.createElement('p');
@@ -136,6 +133,7 @@ fillReviewsHTML = (restaurant = self.restaurant, reviews) => {
     return;
   }
   const ul = document.getElementById('reviews-list');
+  ul.innerHTML = '';
   reviews.forEach(review => {
     ul.appendChild(createReviewHTML(review));
   });
@@ -203,13 +201,17 @@ window.onload = () => {
       comments: elements[2].value,
       restaurant_id: self.restaurant.id
     }
+    e.target.reset();
     await fetch('http://localhost:1337/reviews', { method: 'POST', body: JSON.stringify(data) })
     getReviewsData(true);
   })
 
-  document.querySelector('button').addEventListener('click', () => {
-    fetch(`http://localhost:1337/restaurants/${self.restaurant.id}/?is_favorite=${!self.restaurant.is_favorite}`, { method: 'PUT' })
-    alert(!self.restaurant.is_favorite ? 'You favorited this restaurant' : 'You unfavorited this restaurant')
-    location.reload();
+  document.querySelector('button').addEventListener('click', (e) => {
+    idbKeyval.get("restaurants", store).then(async val => {
+      val[self.restaurant.id - 1].is_favorite = !val[self.restaurant.id - 1].is_favorite
+      await fetch(`http://localhost:1337/restaurants/${self.restaurant.id}/?is_favorite=${val[self.restaurant.id - 1].is_favorite}`, { method: 'PUT' })
+      e.target.innerHTML = val[self.restaurant.id - 1].is_favorite ? 'Unfavorite Restaurant' : 'Favorite Restaurant' 
+      await idbKeyval.set("restaurants", val, store)
+    });
   })
 }
